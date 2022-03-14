@@ -15,7 +15,7 @@ sudo nmap 192.168.1.1/24 --top-ports=100 -oG nmap_results
 
 Now start your Neo4j instance and run the `nmap-to-neo4j.py` script.
 ```
-python3 nmap-to-neo4j.py -p neo4j_password -f nmap_results
+python3 nmap-to-neo4j.py -p neo4j_password -f nmap_results --attacking-host kali-beta --attacking-ip 10.0.0.2
 ```
 
 

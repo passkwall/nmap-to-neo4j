@@ -5,6 +5,11 @@ import re
 from neo4j import GraphDatabase
 from queries import insert
 
+def check_attacking_args(a):
+     if a.attacking_hostname and not a.attacking_ip:
+          print("[!] - Attacking-host needs to be supplied with an attacking-ip (-ai / --attacking-ip).")
+          exit()
+
 def create_arg_parser():
      parser = argparse.ArgumentParser(description="Masscan-to-Neo4j Graph Database Utility")
      parser.add_argument(
@@ -46,6 +51,19 @@ def create_arg_parser():
           dest="nmap_file",
           help="Scan of the grepable nmap file (-oG flag).",
           required=True,
+     )
+     parser.add_argument(
+          "-ah",
+          "--attacking-host",
+          dest="attacking_hostname",
+          help="Hostname of the attacking machine.",
+     )
+
+     parser.add_argument(
+          "-ai",
+          "--attacking-ip",
+          dest="attacking_ip",
+          help="IP address of the attacking machine.",
      )
      return parser
 
@@ -123,18 +141,20 @@ def parse_port_protocol_info(info):
                details.append(port_info)
      return details
 
-def populate_neo4j_database(data, driver):
+def populate_neo4j_database(data, driver, a):
      for entry in data:
           with driver.session() as session:
-               session.write_transaction(insert.create_nodes, entry)
+               session.write_transaction(insert.create_nodes, entry,  a)
 
 if __name__ == "__main__":
      arg_paser = create_arg_parser()
      args = arg_paser.parse_args()
 
+     check_attacking_args(args)
+
      driver = create_neo4j_driver(args.bolt, args.neo_port, args.neo_user, args.neo_pass)
      parsed_nmap_data = parse_nmap_file(args.nmap_file)
 
-     populate_neo4j_database(parsed_nmap_data, driver)
+     populate_neo4j_database(parsed_nmap_data, driver, args)
 
      print("Done Syncing!")
