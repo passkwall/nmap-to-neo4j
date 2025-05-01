@@ -1,5 +1,5 @@
 # nmap-to-neo4j
-Simple python script for importing Nmap results to a Neo4j Graph Database.
+Simple python script for importing Nmap results to a Neo4j Graph Database. [A short writeup on the tooling and idea can be found here](https://passkwall.net/visualizing-network-scans-and-identifying-relationships-with-neo4j/).
 
 > [For a masscan version, click here.](https://github.com/passkwall/masscan-to-neo4j)
 
